@@ -69,6 +69,7 @@ abstract class Dio {
   /// Handy method to make http GET request, which is a alias of  [BaseDio.request].
   Future<Response<T>> get<T>(
     String path, {
+    data,
     Map<String, dynamic> queryParameters,
     Options options,
     CancelToken cancelToken,
@@ -360,6 +361,7 @@ abstract class DioMixin implements Dio {
   @override
   Future<Response<T>> get<T>(
     String path, {
+    data,
     Map<String, dynamic> queryParameters,
     Options options,
     CancelToken cancelToken,
@@ -367,6 +369,7 @@ abstract class DioMixin implements Dio {
   }) {
     return request<T>(
       path,
+      data: data,
       queryParameters: queryParameters,
       options: checkOptions('GET', options),
       onReceiveProgress: onReceiveProgress,
@@ -1032,7 +1035,8 @@ abstract class DioMixin implements Dio {
         options.headers[Headers.contentLengthHeader] = length.toString();
       }
       var complete = 0;
-      var byteStream = stream.transform<Uint8List>(StreamTransformer.fromHandlers(
+      var byteStream =
+          stream.transform<Uint8List>(StreamTransformer.fromHandlers(
         handleData: (data, sink) {
           if (options.cancelToken != null && options.cancelToken.isCancelled) {
             sink
